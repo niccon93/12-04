@@ -59,24 +59,14 @@ WHERE length > (SELECT AVG(length) FROM film);
 Получите информацию, за какой месяц была получена наибольшая сумма платежей, и добавьте информацию по количеству аренд за этот месяц.
 
 ```
-SELECT
-	max_month.Месяц_Год,
-    COUNT(payment.payment_id) AS Количество_аренд,
-    max_month.Максимальная_сумма_платежей
+SELECT sum(amount)as Максимальная_сумма_платежей, DATE_FORMAT(payment_date, '%Y/%M') as Месяц_Год, count(rental_id) as Количество_аренд
 FROM payment
-JOIN (
-    SELECT
-        DATE_FORMAT(payment_date, "%c.%y") AS Месяц_Год,
-        SUM(amount) AS Максимальная_сумма_платежей
-    FROM payment
-    GROUP BY DATE_FORMAT(payment_date, "%c.%y")
-    ORDER BY SUM(amount) DESC
-    LIMIT 1
-) AS max_month ON DATE_FORMAT(payment.payment_date, "%c.%y") = max_month.Месяц_Год
-GROUP BY max_month.Месяц_Год, max_month.Максимальная_сумма_платежей;
+GROUP by Месяц_Год
+ORDER BY sum(amount) DESC
+LIMIT 1;
 ```
 
-![img](img/3.PNG)
+![img](img/3-1.PNG)
 
 ## Дополнительные задания (со звёздочкой*)
 Эти задания дополнительные, то есть не обязательные к выполнению, и никак не повлияют на получение вами зачёта по этому домашнему заданию. Вы можете их выполнить, если хотите глубже шире разобраться в материале.
